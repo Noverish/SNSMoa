@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import kr.ac.korea.intelligentgallery.R;
+import kr.ac.korea.snsmoa.asynctask.ClassifyAsyncTask;
 import kr.ac.korea.snsmoa.webview.VideoWebView;
 import kr.ac.korea.snsmoa.webview.WebViewActivity;
 
@@ -133,7 +134,7 @@ public class FacebookArticleView extends FrameLayout implements View.OnClickList
 
     public void setContent(String content) {
         this.content.setText(content);
-        //TODO Content to Category
+        new ClassifyAsyncTask(category, content).execute();
     }
 
     public void setLinkInfo(String imgUrl, String title, String content) {

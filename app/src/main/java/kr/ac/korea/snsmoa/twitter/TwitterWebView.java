@@ -8,7 +8,7 @@ import android.webkit.WebView;
 import java.util.ArrayList;
 
 import kr.ac.korea.intelligentgallery.R;
-import kr.ac.korea.snsmoa.util.RunnableAsyncTask;
+import kr.ac.korea.snsmoa.asynctask.RunnableAsyncTask;
 import kr.ac.korea.snsmoa.webview.HtmlParseWebView;
 
 

@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import kr.ac.korea.intelligentgallery.R;
+import kr.ac.korea.snsmoa.asynctask.ClassifyAsyncTask;
 import kr.ac.korea.snsmoa.webview.VideoWebView;
 import kr.ac.korea.snsmoa.webview.WebViewActivity;
 
@@ -180,6 +181,7 @@ public class TwitterArticleView extends FrameLayout implements View.OnClickListe
         } else {
             this.content.setText(Html.fromHtml(item.getContent()));
         }
+        new ClassifyAsyncTask(category, content.replaceAll("<[^>]*>", "")).execute();
         //TODO Content to Category
     }
 

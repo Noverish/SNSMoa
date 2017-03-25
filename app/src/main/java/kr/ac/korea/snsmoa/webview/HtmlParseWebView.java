@@ -4,12 +4,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import kr.ac.korea.snsmoa.asynctask.RunnableAsyncTask;
 
 /**
  * Created by Noverish on 2017-03-21.
@@ -81,20 +84,31 @@ public abstract class HtmlParseWebView extends WebView {
     }
 
     public void extractHtmlAsync() {
+        System.out.println("extractHtmlAsync start " + getClass().getSimpleName());
         evaluateJavascript(
                 "(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
                 new ValueCallback<String>() {
                     @Override
                     public void onReceiveValue(String html) {
-                        html = html.replaceAll("(\\\\){1,7}\"", "\"");
-                        html = html.replaceAll("&amp;", "&");
-                        html = html.replaceAll("(\\\\){0,2}&quot;", "\"");
-                        html = html.replaceAll("(\\\\){2,3}x3C", "<");
-                        html = html.replaceAll("(\\\\){1,2}u003C", "<");
-                        html = html.replaceAll("(\\\\){1,2}u003E", ">");
-                        html = html.replaceAll("(\\\\){1,2}/", "/");
+                        new AsyncTask<String, Void, String>() {
+                            @Override
+                            protected String doInBackground(String... params) {
+                                String html = params[0];
+                                html = html.replaceAll("(\\\\){1,7}\"", "\"");
+                                html = html.replaceAll("&amp;", "&");
+                                html = html.replaceAll("(\\\\){0,2}&quot;", "\"");
+                                html = html.replaceAll("(\\\\){2,3}x3C", "<");
+                                html = html.replaceAll("(\\\\){1,2}u003C", "<");
+                                html = html.replaceAll("(\\\\){1,2}u003E", ">");
+                                html = html.replaceAll("(\\\\){1,2}/", "/");
+                                return html;
+                            }
 
-                        onHtmlLoaded(HtmlParseWebView.this, html);
+                            @Override
+                            protected void onPostExecute(String html) {
+                                onHtmlLoaded(HtmlParseWebView.this, html);
+                            }
+                        }.execute(html);
                     }
                 });
     }
