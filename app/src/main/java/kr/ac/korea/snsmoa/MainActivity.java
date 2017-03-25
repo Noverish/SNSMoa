@@ -1,5 +1,9 @@
 package kr.ac.korea.snsmoa;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -11,8 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import java.util.ArrayList;
 
 import kr.ac.korea.intelligentgallery.R;
 import kr.ac.korea.snsmoa.facebook.FacebookClient;
@@ -25,6 +32,9 @@ import kr.ac.korea.snsmoa.util.Essentials;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private HomeFragment homeFragment;
 
+    private ArrayList<String> categorySubMenuItems = new ArrayList<>();
+    private SubMenu categorySubMenu;
+
     private FrameLayout homeFragmentLayout;
     private FacebookWebView facebookWebView;
     private TwitterWebView twitterWebView;
@@ -33,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_snsmoa);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -53,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        categorySubMenu = navigationView.getMenu().addSubMenu("Category");
+        categorySubMenu.add("ALL");
 
         Essentials.replaceFragment(this, R.id.activity_main_fragment_home, homeFragment = new HomeFragment());
 
@@ -62,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         FacebookClient.getInstance().setWebView(facebookWebView);
         TwitterClient.getInstance().setWebView(twitterWebView);
+
+        registerReceiver(new AddCategoryToMenuRecevier(), new IntentFilter(AddCategoryToMenuRecevier.ACTION));
     }
 
     @Override
@@ -122,16 +137,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public class AddCategoryToMenuRecevier extends BroadcastReceiver {
+        public static final String ACTION = "kr.ac.korea.snsmoa.MainActivity.AddCategoryToMenuRecevier";
+        public static final String INTENT_KEY = "category";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String category = intent.getStringExtra(INTENT_KEY);
+            if(!categorySubMenuItems.contains(category)) {
+                categorySubMenuItems.add(category);
+                categorySubMenu.addSubMenu(category);
+            }
+        }
     }
 }

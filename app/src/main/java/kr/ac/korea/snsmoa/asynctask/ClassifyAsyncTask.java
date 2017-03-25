@@ -1,5 +1,6 @@
 package kr.ac.korea.snsmoa.asynctask;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 
 import kr.ac.korea.intelligentgallery.util.DiLabClassifierUtil;
 import kr.ac.korea.mobide.util.ScoreData;
+import kr.ac.korea.snsmoa.MainActivity;
 
 /**
  * Created by Noverish on 2017-03-25.
@@ -40,6 +42,10 @@ public class ClassifyAsyncTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+        Intent braodcast = new Intent(MainActivity.AddCategoryToMenuRecevier.ACTION);
+        braodcast.putExtra(MainActivity.AddCategoryToMenuRecevier.INTENT_KEY, result.split("/")[1]);
+        textView.getContext().sendBroadcast(braodcast);
+
         textView.setText(result);
         if(classifyListener != null)
             classifyListener.onClassified(result);
