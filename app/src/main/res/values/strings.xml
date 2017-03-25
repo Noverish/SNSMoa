@@ -1,0 +1,84 @@
+<resources>
+
+    <string name="app_name">sigAlbum</string>
+    <string name="action_view_count_in_one_row">Grid by</string>
+    <string name="action_arranging">Order by</string>
+    <string name="action_adding">Add Folder</string>
+    <string name="action_revealing">Show Hidden</string>
+
+    <string name="action_clear_inverted_index_db">분류 DB 초기화</string>
+    <string name="action_clear_inverted_index_db_confirm">초기화 확인</string>
+
+    <string name="actionbar_album">sigAlbum</string>
+    <string name="layoutname_folder">Folders</string>
+    <string name="layoutname_category">Category</string>
+
+    <string name="button_more">more</string>
+
+    <string name="actionbar_select">Choose Image</string>
+    <string name="actionbar_folder">Folder</string>
+    <string name="actionbar_move">Move</string>
+    <string name="actionbar_copy">Copy</string>
+
+    <string name="pager_title1">PHOTO</string>
+    <string name="pager_title2">CATEGORY</string>
+
+    <string name="action_searching">Search</string>
+    <string name="action_camera">Camera</string>
+
+    <string name="search_keyword">Keyword search</string>
+    <string name="search_semantic">Semantic search</string>
+
+    <string name="title_activity_folder_category">FolderCategoryAct</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="action_concealing">Hide</string>
+    <string name="action_renaming">Rename</string>
+
+    <string name="action_trashing">Delete</string>
+    <string name="action_hiding">Hide</string>
+    <string name="action_select_cover_image">Change Cover</string>
+    <string name="action_cover_basic">Default</string>
+    <string name="action_cover_select">Select</string>
+    <string name="action_select_all">Select All</string>
+
+    <string name="action_slide_showing">Slide Show</string>
+    <string name="action_select_mode">Select Mode</string>
+
+    <string name="action_sharing">Share</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_delete_confirm">Sure to delete?</string>
+
+
+    <string name="action_detail">Image info</string>
+    <string name="action_rotation">Rotate</string>
+    <string name="action_moving">Move</string>
+    <string name="action_copying">Copy</string>
+    <string name="action_viewing_in_map">Locate on the map</string>
+
+    <string name="action_rotation_left90">90˚ Counter Clockwise</string>
+    <string name="action_rotation_right90">90˚ Clockwise</string>
+    <string name="action_rotation_180">180˚ Rotate</string>
+
+    <string name="action_column_num_2">2 in column</string>
+    <string name="action_column_num_3">3 in column</string>
+    <string name="action_column_num_4">4 in column</string>
+
+    <string name="action_arranging_orderby_abc">Name</string>
+    <string name="action_arranging_orderby_date_taken">Date taken</string>
+    <string name="action_arranging_orderby_date_added">Date added</string>
+    <string name="action_arranging_orderby_size">Size</string>
+    <string name="action_arranging_orderby_data">Path</string>
+
+
+    <!-- Content descriptions -->
+    <string name="descr_image">Image</string>
+
+    <!--Crash 관련 -->
+    <string name="crash_toast_text">crash 발생</string>
+    <string name="crash_dialog_title">Crash</string>
+    <string name="crash_dialog_text">에러로그 전송</string>
+    <string name="crash_dialog_ok_toast">빠른수정하겠습니다.</string>
+
+
+</resources>

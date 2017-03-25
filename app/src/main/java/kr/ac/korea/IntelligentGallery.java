@@ -1,0 +1,52 @@
+package kr.ac.korea;
+
+import android.app.Application;
+
+
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
+import org.apache.lucene.analysis.ko.android.ResourceInitializer;
+
+import kr.ac.korea.intelligentgallery.R;
+import kr.ac.korea.intelligentgallery.util.DebugUtil;
+import kr.ac.korea.intelligentgallery.util.DiLabClassifierUtil;
+
+/**
+ * Created by preparkha on 15. 6. 15..
+ */
+@ReportsCrashes(
+//        formKey = "",
+        resToastText = R.string.crash_toast_text,
+        mode = ReportingInteractionMode.DIALOG,
+        logcatArguments = { "-t", "2000", "-v", "time" },
+        resDialogIcon = android.R.drawable.ic_dialog_info,
+        resDialogTitle = R.string.crash_dialog_title,
+        resDialogText = R.string.crash_dialog_text,
+        mailTo = "giho820@airrabbit.com")
+public class IntelligentGallery extends Application {
+
+    private static IntelligentGallery context;
+
+    public IntelligentGallery() {
+        super();
+        this.context = this;
+        DebugUtil.showDebug("context: " + this.toString());
+    }
+
+    public static IntelligentGallery getContext() {
+        return context;
+    }
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        ResourceInitializer.initialize(getApplicationContext());
+        DiLabClassifierUtil.init(getApplicationContext());
+
+//        ACRA.init(this);
+        DebugUtil.showDebug("KorThaiDicApplication onCreate()");
+    }
+
+}
