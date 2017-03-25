@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/facebook_window_background">
 
-    <me.noverish.snsmoa.CustomRecyclerView
+    <kr.ac.korea.snsmoa.CustomRecyclerView
         android:id="@+id/activity_home_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
