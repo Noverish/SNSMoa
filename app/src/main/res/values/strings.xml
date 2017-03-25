@@ -80,5 +80,12 @@
     <string name="crash_dialog_text">에러로그 전송</string>
     <string name="crash_dialog_ok_toast">빠른수정하겠습니다.</string>
 
+    <!--snsmoa-->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="facebook_init_url">https://m.facebook.com/?_rdr</string>
+
+    <string name="twitter_init_url">https://mobile.twitter.com/</string>
+    <!---->
 </resources>

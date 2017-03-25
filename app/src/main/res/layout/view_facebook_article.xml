@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pure_white"
+    android:layout_marginBottom="@dimen/article_margin_bottom"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/article_facebook_classification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/article_inside_margin"
+        android:textSize="@dimen/article_classification_text_size"
+        android:gravity="end"/>
+
+    <LinearLayout
+        android:id="@+id/facebook_article_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/facebook_article_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/article_inside_margin"
+            android:textSize="13sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/facebook_window_background" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/article_inside_margin"
+        android:layout_marginStart="@dimen/article_inside_margin"
+        android:layout_marginEnd="@dimen/article_inside_margin"
+        android:layout_marginBottom="@dimen/article_inside_margin"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/facebook_article_profile_img"
+                android:layout_width="@dimen/article_profile_size"
+                android:layout_height="@dimen/article_profile_size"
+                android:background="@drawable/default_profile_image"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/article_title_margin_left">
+
+                <TextView
+                    android:id="@+id/facebook_article_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/article_title_text_size"
+                    android:textStyle="bold"
+                    android:textColor="@color/facebook"/>
+
+                <TextView
+                    android:id="@+id/facebook_article_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/facebook_article_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/article_content_margin_top"/>
+
+        <LinearLayout
+            android:id="@+id/facebook_article_media_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/article_content_margin_top"/>
+
+        <LinearLayout
+            android:id="@+id/facebook_article_link_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/article_content_margin_top"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:background="@drawable/border_facebook_link">
+
+            <ImageView
+                android:id="@+id/facebook_article_link_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/facebook_article_link_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/facebook_article_link_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/article_content_margin_top">
+
+            <TextView
+                android:id="@+id/facebook_article_sympathy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/facebook_article_sharing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/facebook_article_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/facebook_article_sharing"
+                android:layout_marginEnd="6dp"
+                android:textSize="12sp"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_marginTop="@dimen/article_inside_margin"-->
+        <!--android:background="@color/facebook_comment_background" />-->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1">-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:gravity="center">-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/article_facebook_like_icon"-->
+                    <!--android:layout_width="20dp"-->
+                    <!--android:layout_height="20dp"-->
+                    <!--android:src="@drawable/icon_facebook_like_false"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/article_facebook_like_text"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="8dp"-->
+                    <!--android:textSize="@dimen/article_bottom_button_text_size"-->
+                    <!--android:textColor="@color/pure_dark"/>-->
+            <!--</LinearLayout>-->
+
+            <!--<Button-->
+                <!--android:id="@+id/facebook_article_like_button"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--style="?android:attr/borderlessButtonStyle"/>-->
+        <!--</RelativeLayout>-->
+
+        <!--<Button-->
+            <!--android:id="@+id/facebook_article_comment_button"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textSize="@dimen/article_bottom_button_text_size"-->
+            <!--style="?android:attr/borderlessButtonStyle"/>-->
+
+        <!--<Button-->
+            <!--android:id="@+id/facebook_article_share_button"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textSize="@dimen/article_bottom_button_text_size"-->
+            <!--style="?android:attr/borderlessButtonStyle"/>-->
+    <!--</LinearLayout>-->
+
+
+</LinearLayout>

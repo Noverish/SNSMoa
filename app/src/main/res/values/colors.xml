@@ -40,4 +40,26 @@
     <color name="colorTabNormal">#D5CDF4</color>
 
     <color name="c_ff222222">#222222</color>
+
+    <!--snsmoa-->
+    <color name="pure_white">#FFFFFF</color>
+    <color name="pure_dark">#000000</color>
+
+    <color name="facebook_window_background">#dcdee3</color>
+    <color name="facebook_article_button_bar_background">#f3f3f3</color>
+    <color name="facebook_comment_background">#DDDDDD</color>
+
+    <color name="facebook">#3b5998</color>
+    <color name="facebook_article_background">#AFC9FF</color>
+
+    <color name="twitter">#2aa9e0</color>
+    <color name="twitter_article_background">#7CD8FF</color>
+    <color name="twitter_retweet">#609928</color>
+    <color name="twitter_favorite">#dd2e44</color>
+
+    <color name="kakao">#fab900</color>
+    <color name="kakao_article_background">#FFD14C</color>
+
+    <color name="twitter_gray_text">#aab8c2</color>
+    <!---->
 </resources>

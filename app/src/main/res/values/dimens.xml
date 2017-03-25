@@ -5,4 +5,33 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+
+    <!--snsmoa-->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+
+    <dimen name="article_classification_text_size">12sp</dimen>
+    <dimen name="article_header_vertical">8dp</dimen>
+    <dimen name="article_inside_margin">8dp</dimen>
+    <dimen name="article_profile_size">50dp</dimen>
+    <dimen name="article_title_text_size">16sp</dimen>
+    <dimen name="article_title_margin_left">8dp</dimen>
+    <dimen name="article_content_margin_top">8dp</dimen>
+    <dimen name="article_bottom_button_text_size">14sp</dimen>
+    <dimen name="article_margin_bottom">8dp</dimen>
+
+    <dimen name="twitter_article_screen_name_left_margin">4dp</dimen>
+    <dimen name="twitter_article_screen_name_text_size">14sp</dimen>
+    <dimen name="twitter_article_content_top_margin">8dp</dimen>
+    <dimen name="twitter_article_content_text_size">16sp</dimen>
+    <dimen name="twitter_article_button_height">24dp</dimen>
+    <dimen name="twitter_article_link_img_height">150dp</dimen>
+    <dimen name="twitter_article_nums_left_margin">4dp</dimen>
+
+    <dimen name="activity_setting_big_cate_margin">12dp</dimen>
+    <dimen name="activity_setting_big_cate_text_size">20sp</dimen>
+
+    <dimen name="view_web_video_height">200dp</dimen>
+    <dimen name="view_web_video_play_button">75dp</dimen>
+    <!---->
 </resources>
