@@ -46,7 +46,6 @@ public class TwitterHtmlProcessor {
 
             contentEle.select("[aria-hidden=\"true\"]").remove();
 
-            String articleId = timeEle.parent().attr("href").replaceAll("\\D","");
             String header = headerEle.html();
             String profileImg = profileEle.attr("src");
             String timeDetail = timeEle.attr("aria-label");
@@ -66,18 +65,17 @@ public class TwitterHtmlProcessor {
             content = Essentials.unicodeToString(content);
             content = content.replaceAll("href=\"/","href=\"https://mobile.twitter.com/");
 
-            item.setArticleId(articleId);
             item.setHeader(header);
-            item.setProfileImageUrl(profileImg);
+            item.setProfileImgUrl(profileImg);
             item.setTimeMillis(stringToMillisInTwitter(timeDetail));
             item.setTimeString(timeStr);
-            item.setName(name);
+            item.setTitle(name);
             item.setScreenName(screenName);
             item.setContent(content);
             item.setRetweeted(isRetweeted);
-            item.setRetweetNumber(retweetNum);
+            item.setRetweetNum(retweetNum);
             item.setFavorited(isLiked);
-            item.setFavoriteNumber(likeNum);
+            item.setFavoriteNum(likeNum);
             item.setArticleUrl(articleUrl);
 
             Element linkEle = article.select("a[class=\"_3kGl_FG7\"]").first();
@@ -183,9 +181,9 @@ public class TwitterHtmlProcessor {
 //                articleItem.setScreenName(screenName);
 //                articleItem.setContent(content);
 //                articleItem.setRetweeted(isRetweeted);
-//                articleItem.setRetweetNumber(retweetNum);
+//                articleItem.setRetweetNum(retweetNum);
 //                articleItem.setFavorited(isLiked);
-//                articleItem.setFavoriteNumber(likeNum);
+//                articleItem.setFavoriteNum(likeNum);
 //
 //                item.setArticleItem(articleItem);
 //            } else {

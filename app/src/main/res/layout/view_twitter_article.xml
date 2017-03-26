@@ -7,31 +7,20 @@
     android:background="@color/pure_white">
 
     <TextView
-        android:id="@+id/twitter_article_view_classification"
+        android:id="@+id/article_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/article_inside_margin"
         android:textSize="@dimen/article_classification_text_size"
         android:gravity="end"/>
 
-    <LinearLayout
-        android:id="@+id/twitter_article_header_layout"
+    <TextView
+        android:id="@+id/article_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/twitter_article_view_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/article_inside_margin"
-            android:text="누가 리트윗 했습니다"
-            android:textColor="@color/twitter_gray_text"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/facebook_window_background" />
-    </LinearLayout>
-
+        android:layout_margin="@dimen/article_inside_margin"
+        android:text="누가 리트윗 했습니다"
+        android:textColor="@color/twitter_gray_text"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,7 +30,7 @@
         android:layout_marginEnd="@dimen/article_inside_margin">
 
         <ImageView
-            android:id="@+id/twitter_article_view_profile_image_view"
+            android:id="@+id/article_profile_img"
             android:layout_width="@dimen/article_profile_size"
             android:layout_height="@dimen/article_profile_size"
             android:layout_marginEnd="@dimen/article_title_margin_left"
@@ -50,7 +39,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/twitter_article_view_profile_image_view"
+            android:layout_toEndOf="@id/article_profile_img"
             android:layout_alignParentTop="true"
             android:orientation="vertical">
 
@@ -59,7 +48,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/twitter_article_view_time"
+                    android:id="@+id/article_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -68,9 +57,9 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toStartOf="@id/twitter_article_view_time">
+                    android:layout_toStartOf="@id/article_time">
                     <TextView
-                        android:id="@+id/twitter_article_view_name"
+                        android:id="@+id/article_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/twitter_article_screen_name_left_margin"
@@ -85,7 +74,7 @@
                         android:id="@+id/twitter_article_view_screen_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/twitter_article_view_name"
+                        android:layout_toEndOf="@id/article_title"
                         android:textSize="@dimen/twitter_article_screen_name_text_size"
                         android:textColor="@color/twitter_gray_text"
                         android:maxLines="1"/>
@@ -93,14 +82,14 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/twitter_article_view_content"
+                android:id="@+id/article_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/article_content_margin_top"
                 android:textSize="@dimen/twitter_article_content_text_size"/>
 
             <LinearLayout
-                android:id="@+id/twitter_article_view_link_layout"
+                android:id="@+id/article_link_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/article_content_margin_top"
@@ -110,20 +99,20 @@
                 android:background="@drawable/border_twitter_link">
 
                 <ImageView
-                    android:id="@+id/twitter_article_view_link_img"
+                    android:id="@+id/article_link_img"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/twitter_article_link_img_height"
                     android:scaleType="centerCrop"/>
 
                 <TextView
-                    android:id="@+id/twitter_article_view_link_content"
+                    android:id="@+id/article_link_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:text="What"/>
 
                 <TextView
-                    android:id="@+id/twitter_article_view_link_domain"
+                    android:id="@+id/article_link_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/twitter_gray_text"/>
@@ -131,7 +120,7 @@
 
 
             <LinearLayout
-                android:id="@+id/twitter_article_view_media_layout"
+                android:id="@+id/article_media_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/article_content_margin_top"

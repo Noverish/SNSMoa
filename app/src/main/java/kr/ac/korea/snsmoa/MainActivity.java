@@ -137,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.nav_slideshow) {
 
+        } else {
+            homeFragment.recyclerView.setCategory((String) item.getTitle());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -146,14 +148,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public class AddCategoryToMenuRecevier extends BroadcastReceiver {
         public static final String ACTION = "kr.ac.korea.snsmoa.MainActivity.AddCategoryToMenuRecevier";
-        public static final String INTENT_KEY = "category";
+        public static final String INTENT_KEY = "fullCategory";
 
         @Override
         public void onReceive(Context context, Intent intent) {
             String category = intent.getStringExtra(INTENT_KEY);
             if(!categorySubMenuItems.contains(category)) {
                 categorySubMenuItems.add(category);
-                categorySubMenu.addSubMenu(category);
+                categorySubMenu.add(category);
             }
         }
     }

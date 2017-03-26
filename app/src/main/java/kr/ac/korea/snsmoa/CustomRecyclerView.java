@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import kr.ac.korea.snsmoa.article.ArticleItem;
+import kr.ac.korea.snsmoa.asynctask.CategorizeAsyncTask;
 import kr.ac.korea.snsmoa.facebook.FacebookArticleItem;
 import kr.ac.korea.snsmoa.facebook.FacebookArticleView;
 import kr.ac.korea.snsmoa.facebook.FacebookClient;
@@ -26,9 +27,11 @@ import kr.ac.korea.snsmoa.util.GridSpacingItemDecoration;
  */
 
 public class CustomRecyclerView extends RecyclerView implements FacebookClient.OnNewItemLoaded, TwitterClient.OnNewItemLoaded {
+    private ArrayList<ArticleItem> allItems = new ArrayList<>();
     private ArrayList<ArticleItem> items = new ArrayList<>();
     private LinearLayoutManager layoutManager;
     private int numOfLoaded = 2;
+    private String category = "ALL";
 
     public CustomRecyclerView(Context context) {
         super(context);
@@ -115,10 +118,7 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
     public void onNewFacebookItemLoaded(ArrayList<FacebookArticleItem> newItems) {
         Log.i("<facebook article>","new facebook article is " + newItems.size());
 
-        for(FacebookArticleItem item : newItems)
-            items.add(item);
-
-        getAdapter().notifyDataSetChanged();
+        addItems(newItems);
         numOfLoaded++;
     }
 
@@ -126,10 +126,70 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
     public void onNewTwitterItemLoaded(ArrayList<TwitterArticleItem> newItems) {
         Log.i("<twitter article>","new twitter article is " + newItems.size());
 
-        for(TwitterArticleItem item : newItems)
-            items.add(item);
-
-        getAdapter().notifyDataSetChanged();
+        addItems(newItems);
         numOfLoaded++;
+    }
+
+    private <T extends ArticleItem> void addItems(ArrayList<T> newItems) {
+        allItems.addAll(newItems);
+
+        if(category.equals("ALL")) {
+            for(ArticleItem item : newItems) {
+                items.add(item);
+                getAdapter().notifyItemInserted(items.size() - 1);
+            }
+        } else {
+            for (ArticleItem item : newItems)
+                if(item.getFullCategory() != null && !item.getFullCategory().equals("")) {
+                    if (category.equals(item.getFullCategory().split("/")[1])) {
+                        items.add(item);
+                        getAdapter().notifyItemInserted(items.size() - 1);
+                    }
+                } else {
+                    new CategorizeAsyncTask(getContext(), item.getContent(), new PreCategorizeListener(item)).execute();
+                }
+        }
+    }
+
+    public void setCategory(String category) {
+        if(!this.category.equals(category)) {
+            this.category = category;
+
+            items.clear();
+            if (category.equals("ALL")) {
+                items.addAll(allItems);
+            } else {
+                for (ArticleItem item : allItems)
+                    if (item.getFullCategory() != null && !item.getFullCategory().equals("")) {
+                        if (category.equals(item.getFullCategory().split("/")[1])) {
+                            items.add(item);
+                        }
+                    } else {
+                        new CategorizeAsyncTask(getContext(), item.getContent(), new PreCategorizeListener(item)).execute();
+                    }
+            }
+            getAdapter().notifyDataSetChanged();
+        }
+    }
+
+    private class PreCategorizeListener implements CategorizeAsyncTask.CategorizeListener {
+        private ArticleItem item;
+
+        private PreCategorizeListener(ArticleItem item) {
+            this.item = item;
+        }
+
+        @Override
+        public void onCategorized(@Nullable String fullCategory) {
+            if(fullCategory != null) {
+                if (category.equals(fullCategory.split("/")[1])) {
+                    item.setFullCategory(fullCategory);
+                    items.add(item);
+                    getAdapter().notifyItemInserted(items.size() - 1);
+                }
+            } else {
+
+            }
+        }
     }
 }

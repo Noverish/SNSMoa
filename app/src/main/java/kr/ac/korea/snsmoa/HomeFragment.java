@@ -14,12 +14,14 @@ import kr.ac.korea.intelligentgallery.R;
  */
 
 public class HomeFragment extends Fragment {
+    public CustomRecyclerView recyclerView;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home, container, false);
 
-        CustomRecyclerView recyclerView = (CustomRecyclerView) view.findViewById(R.id.activity_home_recycler_view);
+        recyclerView = (CustomRecyclerView) view.findViewById(R.id.activity_home_recycler_view);
 
         return view;
     }

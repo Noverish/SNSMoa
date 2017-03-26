@@ -1,7 +1,6 @@
 package kr.ac.korea.snsmoa.facebook;
 
 import android.util.Log;
-import android.util.Pair;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -60,13 +59,6 @@ public class FacebookHtmlProcessor {
                 //내부 아티클 있으면 건너 뜀
                 continue;
 
-            item.setArticleId(Essentials.getMatches("mf_story_key[.][-]?[\\d]*", article.attributes().toString()).replaceAll("[^-0-9]", ""));
-            if(item.getArticleId().equals("")) {
-                Log.e("ERROR", "No mf_story_key : " + article.attributes());
-                continue;
-            }
-
-
             Elements headerPart = article.select("header[class=\"_4g33 _ung _5qc1\"]").select("h3[class=\"_52jd _52jb _52jg _5qc3\"]");
             item.setHeader(Essentials.unicodeToString(headerPart.outerHtml().replaceAll("<[^>]*>","")));
 
@@ -111,21 +103,16 @@ public class FacebookHtmlProcessor {
                 item.setLinkContent(linkContentEle.html().replaceAll("[\\s]*<[^>]*>[\\s]*", ""));
                 item.setLinkUrl(linkUrlEle.attr("href"));
             } else {
-                ArrayList<String> imageUrls = new ArrayList<>();
                 Elements imageElements = mediaPart.select("a._39pi, a._26ih");
-                for (Element imageElement : imageElements) {
-                    String imageUrl = extractImageUrl(imageElement.select("i"), htmlCode);
-
-                    imageUrls.add(imageUrl);
-                }
-                item.setImageUrls(imageUrls);
+                for (Element imageElement : imageElements)
+                    item.addImgUrl(extractImageUrl(imageElement.select("i"), htmlCode));
 
                 Elements videoElements;
                 if ((videoElements = mediaPart.select("div._53mw._4gbu")).size() > 0) { //동영상만 올라옴
                     String videoUrl = extractImageUrl(videoElements, htmlCode);
                     String imageUrl = extractImageUrl(videoElements.select("i"), htmlCode);
 
-                    item.setVideo(new Pair<>(imageUrl, videoUrl));
+                    item.setVideoData(imageUrl, videoUrl);
                 } else if ((videoElements = mediaPart.select("div._53mw")).size() > 0) { //동영상과 사진 같이 올라움
                     System.out.println(videoElements.outerHtml());
                 }
