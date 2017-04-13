@@ -135,8 +135,10 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
 
         if(category.equals("ALL")) {
             for(ArticleItem item : newItems) {
-                items.add(item);
-                getAdapter().notifyItemInserted(items.size() - 1);
+                int random = (int) (Math.random() * items.size());
+
+                items.add(items.size() - random, item);
+                getAdapter().notifyItemInserted(items.size() - random - 1);
             }
         } else {
             for (ArticleItem item : newItems)

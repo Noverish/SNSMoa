@@ -73,10 +73,11 @@ public abstract class ArticleView extends LinearLayout {
 
     protected void setCategory(String category) {
         if(category != null && !category.equals("")) {
-            this.category.setVisibility(View.VISIBLE);
+//            this.category.setVisibility(View.VISIBLE);
             this.category.setText(category);
         } else {
-            this.category.setVisibility(View.GONE);
+//            this.category.setVisibility(View.GONE);
+            this.category.setText("");
         }
     }
 
@@ -112,11 +113,12 @@ public abstract class ArticleView extends LinearLayout {
                 @Override
                 public void onCategorized(@Nullable String fullCategory) {
                     if (fullCategory != null) {
-                        category.setVisibility(View.VISIBLE);
+//                        category.setVisibility(View.VISIBLE);
                         category.setText(fullCategory);
                         articleItem.setFullCategory(fullCategory);
                     } else {
-                        category.setVisibility(View.GONE);
+                        category.setText("");
+//                        category.setVisibility(View.GONE);
                     }
                 }
             }).execute();

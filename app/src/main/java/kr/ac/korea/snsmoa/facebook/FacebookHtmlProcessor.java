@@ -80,11 +80,18 @@ public class FacebookHtmlProcessor {
             }
 
             Element content = article.select("div[class=\"_5rgt _5nk5 _5msi\"]").select("span").first();
-            content.select("[class=\"text_exposed_show\"]").remove();
-            item.setContent(Essentials.unicodeToString(content.outerHtml().replaceAll("<[^>]*>","").trim()));
+            if(content != null) {
+                if (content.select("[class=\"text_exposed_show\"]") != null) {
+                    content.select("[class=\"text_exposed_show\"]").remove();
+                }
+                item.setContent(Essentials.unicodeToString(content.outerHtml().replaceAll("<[^>]*>", "").trim()));
 
-            Elements articleUrlEle = content.select("a[class=\"_5msj\"]");
-            item.setArticleUrl("https://m.facebook.com" + articleUrlEle.attr("href"));
+                Elements articleUrlEle = content.select("a[class=\"_5msj\"]");
+                item.setArticleUrl("https://m.facebook.com" + articleUrlEle.attr("href"));
+            } else {
+                item.setContent("");
+                item.setArticleUrl("");
+            }
 
             Elements mediaPart = article.select("div._5rgu._27x0");
             Elements linkEle = mediaPart.select("section[class=\"_55wo _4o58 _4prr _11cc touchable _5t8z _4o5j _4o5k\"]");

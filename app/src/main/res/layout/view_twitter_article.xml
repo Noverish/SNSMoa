@@ -47,38 +47,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <ImageView
+                    android:id="@+id/article_logo"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/icon_twitter"/>
+
+                <TextView
+                    android:id="@+id/article_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/twitter_article_screen_name_left_margin"
+                    android:text="홍길동"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/article_title_text_size"
+                    android:textColor="@color/twitter"
+                    android:ellipsize="end"
+                    android:maxLines="1"/>
+
+                <TextView
+                    android:id="@+id/twitter_article_view_screen_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/article_title"
+                    android:layout_toStartOf="@id/article_logo"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="@dimen/twitter_article_screen_name_text_size"
+                    android:textColor="@color/twitter_gray_text"
+                    android:maxLines="1"/>
+
                 <TextView
                     android:id="@+id/article_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/article_title"
                     android:textSize="@dimen/twitter_article_screen_name_text_size"/>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toStartOf="@id/article_time">
-                    <TextView
-                        android:id="@+id/article_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/twitter_article_screen_name_left_margin"
-                        android:text="홍길동"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/article_title_text_size"
-                        android:textColor="@color/twitter"
-                        android:ellipsize="end"
-                        android:maxLines="1"/>
-
-                    <TextView
-                        android:id="@+id/twitter_article_view_screen_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/article_title"
-                        android:textSize="@dimen/twitter_article_screen_name_text_size"
-                        android:textColor="@color/twitter_gray_text"
-                        android:maxLines="1"/>
-                </RelativeLayout>
             </RelativeLayout>
 
             <TextView
@@ -95,7 +99,6 @@
                 android:layout_marginTop="@dimen/article_content_margin_top"
                 android:orientation="vertical"
                 android:visibility="gone"
-                android:padding="4dp"
                 android:background="@drawable/border_twitter_link">
 
                 <ImageView
@@ -104,18 +107,26 @@
                     android:layout_height="@dimen/twitter_article_link_img_height"
                     android:scaleType="centerCrop"/>
 
-                <TextView
-                    android:id="@+id/article_link_title"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:text="What"/>
+                    android:padding="4dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/article_link_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/twitter_gray_text"/>
+                    <TextView
+                        android:id="@+id/article_link_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:id="@+id/article_link_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"/>
+                </LinearLayout>
             </LinearLayout>
 
 

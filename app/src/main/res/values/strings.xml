@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">sigAlbum</string>
+    <string name="app_name">sigSocial</string>
     <string name="action_view_count_in_one_row">Grid by</string>
     <string name="action_arranging">Order by</string>
     <string name="action_adding">Add Folder</string>
@@ -9,7 +9,7 @@
     <string name="action_clear_inverted_index_db">분류 DB 초기화</string>
     <string name="action_clear_inverted_index_db_confirm">초기화 확인</string>
 
-    <string name="actionbar_album">sigAlbum</string>
+    <string name="actionbar_album">sigSocial</string>
     <string name="layoutname_folder">Folders</string>
     <string name="layoutname_category">Category</string>
 

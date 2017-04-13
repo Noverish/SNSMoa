@@ -39,16 +39,25 @@
                 android:layout_height="@dimen/article_profile_size"
                 android:background="@drawable/default_profile_image"/>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginStart="@dimen/article_title_margin_left">
+
+                <ImageView
+                    android:id="@+id/article_logo"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/icon_facebook"/>
 
                 <TextView
                     android:id="@+id/article_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/article_logo"
+                    android:layout_marginEnd="8dp"
                     android:textSize="@dimen/article_title_text_size"
                     android:textStyle="bold"
                     android:textColor="@color/facebook"/>
@@ -56,8 +65,10 @@
                 <TextView
                     android:id="@+id/article_time"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/article_title" />
+
+            </RelativeLayout>
         </LinearLayout>
 
         <TextView
