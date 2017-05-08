@@ -16,7 +16,8 @@ import kr.ac.korea.snsmoa.webview.HtmlParseWebView;
  */
 
 public class FacebookWebView extends HtmlParseWebView {
-    private OnItemLoaded onItemLoaded;
+    private FacebookWebViewCallback facebookWebViewCallback;
+    private boolean isNotLogined = false;
 
     public FacebookWebView(Context context) {
         super(context);
@@ -37,11 +38,13 @@ public class FacebookWebView extends HtmlParseWebView {
         new FacebookHtmlAsyncTask(html).execute();
     }
 
-    public void setOnItemLoaded(OnItemLoaded onItemLoaded) {
-        this.onItemLoaded = onItemLoaded;
+    public void setFacebookWebViewCallback(FacebookWebViewCallback facebookWebViewCallback) {
+        this.facebookWebViewCallback = facebookWebViewCallback;
     }
 
-    public interface OnItemLoaded {
+    public interface FacebookWebViewCallback {
+        void isNotLogined();
+        void userLogined();
         void onItemLoaded(ArrayList<FacebookArticleItem> items);
     }
 
@@ -54,13 +57,29 @@ public class FacebookWebView extends HtmlParseWebView {
 
         @Override
         protected ArrayList<FacebookArticleItem> doInBackground(Void... params) {
+            if(FacebookHtmlProcessor.isNotLogined(html))
+                return null;
+
             return FacebookHtmlProcessor.processArticle(html);
         }
 
         @Override
         protected void onPostExecute(ArrayList<FacebookArticleItem> facebookArticleItems) {
-            if(onItemLoaded != null)
-                onItemLoaded.onItemLoaded(facebookArticleItems);
+            if(facebookArticleItems == null) {
+                if(facebookWebViewCallback != null)
+                    facebookWebViewCallback.isNotLogined();
+                isNotLogined = true;
+                return;
+            }
+
+            if(facebookWebViewCallback != null)
+                facebookWebViewCallback.onItemLoaded(facebookArticleItems);
+
+            if(isNotLogined && facebookArticleItems.size() > 0) {
+                if (facebookWebViewCallback != null)
+                    facebookWebViewCallback.userLogined();
+                isNotLogined = false;
+            }
         }
     }
 }

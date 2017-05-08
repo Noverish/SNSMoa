@@ -58,6 +58,9 @@ public class FacebookHtmlProcessor {
             if(article.select("article").size() > 1)
                 //내부 아티클 있으면 건너 뜀
                 continue;
+            if(article.classNames().contains("_4jey"))
+                //어버이날 share용 (잘 모름)
+                continue;
 
             Elements headerPart = article.select("header[class=\"_4g33 _ung _5qc1\"]").select("h3[class=\"_52jd _52jb _52jg _5qc3\"]");
             item.setHeader(Essentials.unicodeToString(headerPart.outerHtml().replaceAll("<[^>]*>","")));
@@ -131,18 +134,25 @@ public class FacebookHtmlProcessor {
 
             Element numberBar = article.select("div[class=\"_rnk _2eo- _1e6\"]").first();
 
-            Element likeNum = numberBar.select("div[class=\"_1g06\"]").first();
-            if(likeNum != null)
+            try {
+                Element likeNum = numberBar.select("div[class=\"_1g06\"]").first();
                 item.setLikeNum(Essentials.unicodeToString(likeNum.html()));
-
-            if(numberBar.select("span[class=\"_1j-c\"]").size() >= 1) {
-                Element commentNum = numberBar.select("span[class=\"_1j-c\"]").get(0);
-                item.setCommentNum(Essentials.unicodeToString(commentNum.html()));
+            } catch (Exception ex) {
+                item.setLikeNum("0");
             }
 
-            if(numberBar.select("span[class=\"_1j-c\"]").size() >= 2) {
+            try {
+                Element commentNum = numberBar.select("span[class=\"_1j-c\"]").get(0);
+                item.setCommentNum(Essentials.unicodeToString(commentNum.html()));
+            } catch (Exception ex) {
+                item.setCommentNum("0");
+            }
+
+            try {
                 Element shareNum = numberBar.select("span[class=\"_1j-c\"]").get(1);
                 item.setSharingNum(Essentials.unicodeToString(shareNum.html()));
+            } catch (Exception ex) {
+                item.setSharingNum("0");
             }
 
             items.add(item);
@@ -206,5 +216,9 @@ public class FacebookHtmlProcessor {
             calendar.set(Calendar.YEAR, Integer.parseInt(tmp.replaceAll("[\\D]","")));
 
         return calendar.getTimeInMillis();
+    }
+
+    public static boolean isNotLogined(String html) {
+        return Jsoup.parse(html).select("button[class=\"_54k8 _56bs _56b_ _56bw _56bu\"").size() > 0;
     }
 }

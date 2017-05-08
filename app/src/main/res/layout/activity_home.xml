@@ -1,12 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/facebook_window_background">
+
+    <TextView
+        android:id="@+id/activity_home_twitter_not_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Twitter is not logined!\nIf you want to login, Touch this"
+        android:textSize="18sp"
+        android:textColor="@color/pure_white"
+        android:visibility="gone"
+        android:background="@color/twitter"/>
+
+    <TextView
+        android:id="@+id/activity_home_facebook_not_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Facebook is not logined!\nIf you want to login, Touch this"
+        android:textSize="18sp"
+        android:textColor="@color/pure_white"
+        android:visibility="gone"
+        android:background="@color/facebook"/>
 
     <kr.ac.korea.snsmoa.CustomRecyclerView
         android:id="@+id/activity_home_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"/>
-</RelativeLayout>
+</LinearLayout>

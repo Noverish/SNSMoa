@@ -17,7 +17,8 @@ import kr.ac.korea.snsmoa.webview.HtmlParseWebView;
  */
 
 public class TwitterWebView extends HtmlParseWebView {
-    private OnItemLoaded onItemLoaded;
+    private TwitterWebViewCallback twitterWebViewCallback;
+    private boolean isNotLogined = false;
 
     public TwitterWebView(Context context) {
         super(context);
@@ -38,11 +39,13 @@ public class TwitterWebView extends HtmlParseWebView {
         new TwitterHtmlAsyncTask(html).execute();
     }
 
-    public void setOnItemLoaded(OnItemLoaded onItemLoaded) {
-        this.onItemLoaded = onItemLoaded;
+    public void setTwitterWebViewCallback(TwitterWebViewCallback twitterWebViewCallback) {
+        this.twitterWebViewCallback = twitterWebViewCallback;
     }
 
-    public interface OnItemLoaded {
+    public interface TwitterWebViewCallback {
+        void isNotLogined();
+        void userLogined();
         void onItemLoaded(ArrayList<TwitterArticleItem> items);
     }
 
@@ -55,14 +58,24 @@ public class TwitterWebView extends HtmlParseWebView {
 
         @Override
         protected ArrayList<TwitterArticleItem> doInBackground(Void... params) {
+            if(TwitterHtmlProcessor.isNotLogined(html))
+                return null;
+
             return TwitterHtmlProcessor.processArticle(html);
         }
 
         @Override
         protected void onPostExecute(ArrayList<TwitterArticleItem> twitterArticleItems) {
+            if(twitterArticleItems == null) {
+                if(twitterWebViewCallback != null)
+                    twitterWebViewCallback.isNotLogined();
+                isNotLogined = true;
+                return;
+            }
+
             if(twitterArticleItems.size() != 0) {
-                if (onItemLoaded != null)
-                    onItemLoaded.onItemLoaded(twitterArticleItems);
+                if (twitterWebViewCallback != null)
+                    twitterWebViewCallback.onItemLoaded(twitterArticleItems);
             } else {
                 new RunnableAsyncTask(new Runnable() {
                     @Override
@@ -70,6 +83,12 @@ public class TwitterWebView extends HtmlParseWebView {
                         extractHtmlAsync();
                     }
                 }).execute();
+            }
+
+            if(isNotLogined && twitterArticleItems.size() > 0) {
+                if (twitterWebViewCallback != null)
+                    twitterWebViewCallback.userLogined();
+                isNotLogined = false;
             }
         }
     }

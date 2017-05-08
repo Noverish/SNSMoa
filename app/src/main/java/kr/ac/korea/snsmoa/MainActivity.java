@@ -76,7 +76,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FacebookClient.getInstance().setWebView(facebookWebView);
         TwitterClient.getInstance().setWebView(twitterWebView);
 
+        FacebookClient.getInstance().setOnIsNotLogined(new FacebookClient.OnIsNotLogined() {
+            @Override
+            public void isNotLogined() {
+                homeFragment.facebookNotLogin.setVisibility(View.VISIBLE);
+            }
+        });
+        TwitterClient.getInstance().setOnIsNotLogined(new TwitterClient.OnIsNotLogined() {
+            @Override
+            public void isNotLogined() {
+                homeFragment.twitterNotLogin.setVisibility(View.VISIBLE);
+            }
+        });
+
         registerReceiver(new AddCategoryToMenuRecevier(), new IntentFilter(AddCategoryToMenuRecevier.ACTION));
+        registerReceiver(new ChangeScreenReceiver(), new IntentFilter(ChangeScreenReceiver.ACTION));
     }
 
     @Override
@@ -106,19 +120,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_home) {
-            homeFragmentLayout.setVisibility(View.VISIBLE);
-            facebookWebView.setVisibility(View.VISIBLE);
-            twitterWebView.setVisibility(View.VISIBLE);
+            changeScreen(Screen.home);
             return true;
         } else if (id == R.id.action_facebook) {
-            homeFragmentLayout.setVisibility(View.INVISIBLE);
-            facebookWebView.setVisibility(View.VISIBLE);
-            twitterWebView.setVisibility(View.INVISIBLE);
+            changeScreen(Screen.facebook);
             return true;
         } else if (id == R.id.action_twitter) {
-            homeFragmentLayout.setVisibility(View.INVISIBLE);
-            facebookWebView.setVisibility(View.INVISIBLE);
-            twitterWebView.setVisibility(View.VISIBLE);
+            changeScreen(Screen.twitter);
             return true;
         }
 
@@ -146,6 +154,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    public void changeScreen(Screen screen) {
+        switch (screen) {
+            case home:
+                homeFragmentLayout.setVisibility(View.VISIBLE);
+                facebookWebView.setVisibility(View.VISIBLE);
+                twitterWebView.setVisibility(View.VISIBLE);
+                break;
+            case twitter:
+                homeFragmentLayout.setVisibility(View.INVISIBLE);
+                facebookWebView.setVisibility(View.INVISIBLE);
+                twitterWebView.setVisibility(View.VISIBLE);
+                break;
+            case facebook:
+                homeFragmentLayout.setVisibility(View.INVISIBLE);
+                facebookWebView.setVisibility(View.VISIBLE);
+                twitterWebView.setVisibility(View.INVISIBLE);
+                break;
+        }
+    }
+
     public class AddCategoryToMenuRecevier extends BroadcastReceiver {
         public static final String ACTION = "kr.ac.korea.snsmoa.MainActivity.AddCategoryToMenuRecevier";
         public static final String INTENT_KEY = "fullCategory";
@@ -157,6 +185,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 categorySubMenuItems.add(category);
                 categorySubMenu.add(category);
             }
+        }
+    }
+
+    public enum Screen {
+        home,
+        twitter,
+        facebook
+    }
+
+    public class ChangeScreenReceiver extends BroadcastReceiver {
+        public static final String ACTION = "kr.ac.korea.snsmoa.MainActivity.ChangeScreenReceiver";
+        public static final String INTENT_KEY = "screen";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            changeScreen((Screen) intent.getSerializableExtra(INTENT_KEY));
         }
     }
 }
