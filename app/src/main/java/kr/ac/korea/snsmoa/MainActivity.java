@@ -27,6 +27,7 @@ import kr.ac.korea.snsmoa.facebook.FacebookWebView;
 import kr.ac.korea.snsmoa.twitter.TwitterClient;
 import kr.ac.korea.snsmoa.twitter.TwitterWebView;
 import kr.ac.korea.snsmoa.util.Essentials;
+import kr.ac.korea.snsmoa.youtube.YoutubeActivity;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -91,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         registerReceiver(new AddCategoryToMenuRecevier(), new IntentFilter(AddCategoryToMenuRecevier.ACTION));
         registerReceiver(new ChangeScreenReceiver(), new IntentFilter(ChangeScreenReceiver.ACTION));
+
+        System.out.println(getApplicationContext().getPackageName());
     }
 
     @Override
@@ -128,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.action_twitter) {
             changeScreen(Screen.twitter);
             return true;
+        } else if (id == R.id.action_youtube) {
+            startActivity(new Intent(this, YoutubeActivity.class));
         }
 
         return super.onOptionsItemSelected(item);

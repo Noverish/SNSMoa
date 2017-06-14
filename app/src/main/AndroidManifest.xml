@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
     <intent-filter>
         <action android:name="android.intent.action.MEDIA_MOUNTED" />
         <data android:scheme="file" />
@@ -30,6 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="kr.ac.korea.snsmoa.youtube.YoutubeActivity" />
 
         <activity
             android:name=".act.IntroAct"

@@ -84,7 +84,7 @@ public class TwitterHtmlProcessor {
                 Element linkTitleEle = linkEle.select("span[class=\"Fe7ul3Lt _2p1VUcTE _2DggF3sL _1HXcreMa\"]").first();
                 Element linkContentEle = linkEle.select("span[class=\"Fe7ul3Lt _2DggF3sL _34Ymm628\"]").first();
 
-                item.setLinkImgUrl(extractImgUrl(linkImgEle, html));
+                item.setLinkImgUrl(extractImgUrl(linkImgEle));
                 item.setLinkTitle(Essentials.unicodeToString(linkTitleEle.html()));
                 item.setLinkContent(Essentials.unicodeToString(linkContentEle.html()));
                 item.setLinkUrl(linkEle.attr("href"));
@@ -128,6 +128,12 @@ public class TwitterHtmlProcessor {
         String key = Essentials.getMatches("\\d+", damaged);
         String extraced = Essentials.getMatches("\"[^\"]*" + key + "[^\"]*\"", originHtml);
         return extraced.replaceAll("\"","");
+    }
+
+    public static String extractImgUrl(Element element) {
+        String url = Essentials.getMatches("https:\\/\\/[^)]*", element.outerHtml());
+        url = url.replaceAll("&amp;","&");
+        return url;
     }
 
     public static long stringToMillisInTwitter(String str) {
