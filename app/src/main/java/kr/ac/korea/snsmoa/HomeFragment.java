@@ -12,6 +12,7 @@ import android.widget.TextView;
 import kr.ac.korea.intelligentgallery.R;
 import kr.ac.korea.snsmoa.facebook.FacebookClient;
 import kr.ac.korea.snsmoa.twitter.TwitterClient;
+import kr.ac.korea.snsmoa.youtube.YoutubeClient;
 
 /**
  * Created by Noverish on 2017-03-21.
@@ -32,6 +33,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         twitterNotLogin.setOnClickListener(this);
         facebookNotLogin.setOnClickListener(this);
+
+        TwitterClient.getInstance().setOnNewItemLoaded(recyclerView);
+        FacebookClient.getInstance().setOnNewItemLoaded(recyclerView);
+        YoutubeClient.getInstance().setOnNewItemLoaded(recyclerView);
 
         TwitterClient.getInstance().setOnUserLogined(new TwitterClient.OnUserLogined() {
             @Override

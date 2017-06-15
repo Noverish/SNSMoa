@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import kr.ac.korea.snsmoa.article.ArticleItem;
+import kr.ac.korea.snsmoa.article.ArticleView;
 import kr.ac.korea.snsmoa.asynctask.CategorizeAsyncTask;
 import kr.ac.korea.snsmoa.facebook.FacebookArticleItem;
 import kr.ac.korea.snsmoa.facebook.FacebookArticleView;
@@ -20,17 +21,20 @@ import kr.ac.korea.snsmoa.twitter.TwitterArticleItem;
 import kr.ac.korea.snsmoa.twitter.TwitterArticleView;
 import kr.ac.korea.snsmoa.twitter.TwitterClient;
 import kr.ac.korea.snsmoa.util.GridSpacingItemDecoration;
+import kr.ac.korea.snsmoa.youtube.YoutubeClient;
+import kr.ac.korea.snsmoa.youtube.YoutubeItem;
+import kr.ac.korea.snsmoa.youtube.YoutubeView;
 
 
 /**
  * Created by Noverish on 2017-03-22.
  */
 
-public class CustomRecyclerView extends RecyclerView implements FacebookClient.OnNewItemLoaded, TwitterClient.OnNewItemLoaded {
+public class CustomRecyclerView extends RecyclerView implements FacebookClient.OnNewItemLoaded, TwitterClient.OnNewItemLoaded, YoutubeClient.OnNewItemLoaded {
     private ArrayList<ArticleItem> allItems = new ArrayList<>();
     private ArrayList<ArticleItem> items = new ArrayList<>();
     private LinearLayoutManager layoutManager;
-    private int numOfLoaded = 2;
+    private int numOfLoaded = 3;
     private String category = "ALL";
 
     public CustomRecyclerView(Context context) {
@@ -48,13 +52,12 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
         setLayoutManager(layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         addItemDecoration(new GridSpacingItemDecoration(1, 20, false));
         addOnScrollListener(new CustomScrollListener());
-        TwitterClient.getInstance().setOnNewItemLoaded(this);
-        FacebookClient.getInstance().setOnNewItemLoaded(this);
     }
 
-    public class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
-        public static final int FACEBOOK = 0;
-        public static final int TWITTER = 1;
+    private class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
+        static final int FACEBOOK = 0;
+        static final int TWITTER = 1;
+        static final int YOUTUBE = 2;
 
         @Override
         public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -63,6 +66,8 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
                     return new CustomViewHolder(new FacebookArticleView(getContext()));
                 case TWITTER:
                     return new CustomViewHolder(new TwitterArticleView(getContext()));
+                case YOUTUBE:
+                    return new CustomViewHolder(new YoutubeView(getContext()));
                 default:
                     return null;
             }
@@ -70,11 +75,18 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
 
         @Override
         public void onBindViewHolder(CustomViewHolder holder, int position) {
-            if(holder.itemView instanceof FacebookArticleView && items.get(position) instanceof FacebookArticleItem) {
-                ((FacebookArticleView) holder.itemView).setItem((FacebookArticleItem) items.get(position));
-            } else if(holder.itemView instanceof TwitterArticleView && items.get(position) instanceof TwitterArticleItem) {
-                ((TwitterArticleView) holder.itemView).setItem((TwitterArticleItem) items.get(position));
+            ArticleView view = (ArticleView) holder.itemView;
+            ArticleItem item = items.get(position);
+
+            if(view instanceof FacebookArticleView && item instanceof FacebookArticleItem) {
+                ((FacebookArticleView) view).setItem((FacebookArticleItem) item);
+            } else if(view instanceof TwitterArticleView && item instanceof TwitterArticleItem) {
+                ((TwitterArticleView) view).setItem((TwitterArticleItem) item);
+            } else if(view instanceof YoutubeView && item instanceof YoutubeItem) {
+                ((YoutubeView) view).setItem((YoutubeItem) item);
             }
+
+            view.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
         @Override
@@ -84,10 +96,14 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
 
         @Override
         public int getItemViewType(int position) {
-            if(items.get(position) instanceof FacebookArticleItem)
+            ArticleItem item = items.get(position);
+
+            if(item instanceof FacebookArticleItem)
                 return FACEBOOK;
-            if(items.get(position) instanceof TwitterArticleItem)
+            if(item instanceof TwitterArticleItem)
                 return TWITTER;
+            if(item instanceof YoutubeItem)
+                return YOUTUBE;
             return -1;
         }
     }
@@ -103,12 +119,13 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
 
-            if(dy > 0 && numOfLoaded >= 2) {
+            if(dy > 0 && numOfLoaded >= 3) {
                 if (items.size() - layoutManager.findFirstCompletelyVisibleItemPosition() < 5) {
                     numOfLoaded = 0;
 
                     FacebookClient.getInstance().loadNextPage();
                     TwitterClient.getInstance().loadNextPage();
+                    YoutubeClient.getInstance().loadNextPage();
                 }
             }
         }
@@ -125,6 +142,14 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
     @Override
     public void onNewTwitterItemLoaded(ArrayList<TwitterArticleItem> newItems) {
         Log.i("<twitter article>","new twitter article is " + newItems.size());
+
+        addItems(newItems);
+        numOfLoaded++;
+    }
+
+    @Override
+    public void onNewYoutubeItemLoaded(ArrayList<YoutubeItem> newItems) {
+        Log.i("<youtube article>","new youtube article is " + newItems.size());
 
         addItems(newItems);
         numOfLoaded++;

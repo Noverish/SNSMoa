@@ -2,24 +2,15 @@ package kr.ac.korea.snsmoa.youtube;
 
 import android.Manifest;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -36,6 +27,10 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Subscription;
 import com.google.api.services.youtube.model.SubscriptionListResponse;
+import com.google.api.services.youtube.model.Video;
+import com.google.api.services.youtube.model.VideoListResponse;
+
+import org.jsoup.helper.StringUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,16 +40,18 @@ import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
- * Created by Noverish on 2017-06-10.
+ * Created by Noverish on 2017-06-16.
  */
 
-public class YoutubeActivity extends AppCompatActivity
-        implements EasyPermissions.PermissionCallbacks {
+public class YoutubeClient implements EasyPermissions.PermissionCallbacks {
+    private Activity activity;
+    private OnNewItemLoaded onNewItemLoaded;
+
+
     GoogleAccountCredential mCredential;
-    private TextView mOutputText;
-    private Button mCallApiButton;
-    ProgressDialog mProgress;
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -65,59 +62,26 @@ public class YoutubeActivity extends AppCompatActivity
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { YouTubeScopes.YOUTUBE_READONLY };
 
-    /**
-     * Create the main activity.
-     * @param savedInstanceState previously saved instance data.
-     */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        LinearLayout activityLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        activityLayout.setLayoutParams(lp);
-        activityLayout.setOrientation(LinearLayout.VERTICAL);
-        activityLayout.setPadding(16, 16, 16, 16);
+    private static YoutubeClient instance;
+    public static YoutubeClient getInstance() {
+        if(instance == null)
+            instance = new YoutubeClient();
 
-        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        return instance;
+    }
 
-        mCallApiButton = new Button(this);
-        mCallApiButton.setText(BUTTON_TEXT);
-        mCallApiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallApiButton.setEnabled(false);
-                mOutputText.setText("");
-                getResultsFromApi();
-                mCallApiButton.setEnabled(true);
-            }
-        });
-        activityLayout.addView(mCallApiButton);
+    private YoutubeClient() {}
 
-        mOutputText = new TextView(this);
-        mOutputText.setLayoutParams(tlp);
-        mOutputText.setPadding(16, 16, 16, 16);
-        mOutputText.setVerticalScrollBarEnabled(true);
-        mOutputText.setMovementMethod(new ScrollingMovementMethod());
-        mOutputText.setText(
-                "Click the \'" + BUTTON_TEXT +"\' button to test the API.");
-        activityLayout.addView(mOutputText);
-
-        mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Calling YouTube Data API ...");
-
-        setContentView(activityLayout);
+    public void initiate(Activity activity) {
+        this.activity = activity;
 
         // Initialize credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
+                activity.getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+
+        getResultsFromApi();
     }
-
-
 
     /**
      * Attempt to call the API, after verifying that all the preconditions are
@@ -132,7 +96,7 @@ public class YoutubeActivity extends AppCompatActivity
         } else if (mCredential.getSelectedAccountName() == null) {
             chooseAccount();
         } else if (! isDeviceOnline()) {
-            mOutputText.setText("No network connection available.");
+            throw new IllegalArgumentException("No network connection available.");
         } else {
             new MakeRequestTask(mCredential).execute();
         }
@@ -151,22 +115,22 @@ public class YoutubeActivity extends AppCompatActivity
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
     private void chooseAccount() {
         if (EasyPermissions.hasPermissions(
-                this, Manifest.permission.GET_ACCOUNTS)) {
-            String accountName = getPreferences(Context.MODE_PRIVATE)
+                activity, Manifest.permission.GET_ACCOUNTS)) {
+            String accountName = activity.getPreferences(Context.MODE_PRIVATE)
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
                 getResultsFromApi();
             } else {
                 // Start a dialog from which the user can choose an account
-                startActivityForResult(
+                activity.startActivityForResult(
                         mCredential.newChooseAccountIntent(),
                         REQUEST_ACCOUNT_PICKER);
             }
         } else {
             // Request the GET_ACCOUNTS permission via a user dialog
             EasyPermissions.requestPermissions(
-                    this,
+                    activity,
                     "This app needs to access your Google account (via Contacts).",
                     REQUEST_PERMISSION_GET_ACCOUNTS,
                     Manifest.permission.GET_ACCOUNTS);
@@ -183,16 +147,13 @@ public class YoutubeActivity extends AppCompatActivity
      * @param data Intent (containing result data) returned by incoming
      *     activity result.
      */
-    @Override
-    protected void onActivityResult(
+    public void onActivityResult(
             int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
-                    mOutputText.setText(
-                            "This app requires Google Play Services. Please install " +
-                                    "Google Play Services on your device and relaunch this app.");
+                    throw new IllegalArgumentException("This app requires Google Play Services. Please install " +
+                            "Google Play Services on your device and relaunch this app.");
                 } else {
                     getResultsFromApi();
                 }
@@ -204,7 +165,7 @@ public class YoutubeActivity extends AppCompatActivity
                             data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
                     if (accountName != null) {
                         SharedPreferences settings =
-                                getPreferences(Context.MODE_PRIVATE);
+                                activity.getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
@@ -229,11 +190,9 @@ public class YoutubeActivity extends AppCompatActivity
      * @param grantResults The grant results for the corresponding permissions
      *     which is either PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
      */
-    @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(
                 requestCode, permissions, grantResults, this);
     }
@@ -268,7 +227,7 @@ public class YoutubeActivity extends AppCompatActivity
      */
     private boolean isDeviceOnline() {
         ConnectivityManager connMgr =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
@@ -282,7 +241,7 @@ public class YoutubeActivity extends AppCompatActivity
         GoogleApiAvailability apiAvailability =
                 GoogleApiAvailability.getInstance();
         final int connectionStatusCode =
-                apiAvailability.isGooglePlayServicesAvailable(this);
+                apiAvailability.isGooglePlayServicesAvailable(activity);
         return connectionStatusCode == ConnectionResult.SUCCESS;
     }
 
@@ -294,7 +253,7 @@ public class YoutubeActivity extends AppCompatActivity
         GoogleApiAvailability apiAvailability =
                 GoogleApiAvailability.getInstance();
         final int connectionStatusCode =
-                apiAvailability.isGooglePlayServicesAvailable(this);
+                apiAvailability.isGooglePlayServicesAvailable(activity);
         if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
             showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
         }
@@ -311,7 +270,7 @@ public class YoutubeActivity extends AppCompatActivity
             final int connectionStatusCode) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         Dialog dialog = apiAvailability.getErrorDialog(
-                YoutubeActivity.this,
+                activity,
                 connectionStatusCode,
                 REQUEST_GOOGLE_PLAY_SERVICES);
         dialog.show();
@@ -321,7 +280,7 @@ public class YoutubeActivity extends AppCompatActivity
      * An asynchronous task that handles the YouTube Data API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
      */
-    private class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
+    private class MakeRequestTask extends AsyncTask<Void, Void, List<YoutubeItem>> {
         private com.google.api.services.youtube.YouTube mService = null;
         private Exception mLastError = null;
 
@@ -339,7 +298,7 @@ public class YoutubeActivity extends AppCompatActivity
          * @param params no parameters needed for this task.
          */
         @Override
-        protected List<String> doInBackground(Void... params) {
+        protected List<YoutubeItem> doInBackground(Void... params) {
             try {
                 return getDataFromApi();
             } catch (Exception e) {
@@ -354,33 +313,39 @@ public class YoutubeActivity extends AppCompatActivity
          * @return List of Strings containing information about the channel.
          * @throws IOException
          */
-        private List<String> getDataFromApi() throws IOException {
+        private List<YoutubeItem> getDataFromApi() throws IOException {
             try {
                 // Get a list of up to 10 files.
-                List<String> returns = new ArrayList<>();
+                List<String> videoIds = new ArrayList<>();
+                List<YoutubeItem> returns = new ArrayList<>();
 
-                SubscriptionListResponse subscriptionListResponse = mService.subscriptions().list("snippet,contentDetails")
+                SubscriptionListResponse subscriptionListResponse = mService.subscriptions().list("snippet")
                         .setMine(true)
                         .setMaxResults(50L)
                         .execute();
                 List<Subscription> subscriptions = subscriptionListResponse.getItems();
-                if (subscriptions != null) {
-                    for(Subscription subscription : subscriptions) {
+                for(Subscription subscription : subscriptions) {
+                    SearchListResponse searchListResponse = mService.search().list("snippet")
+                            .setChannelId(subscription.getSnippet().getResourceId().getChannelId())
+                            .setOrder("date")
+                            .execute();
 
-                        SearchListResponse searchListResponse = mService.search().list("snippet")
-                                .setChannelId(subscription.getSnippet().getResourceId().getChannelId())
-                                .execute();
-
-                        List<SearchResult> searchResults = searchListResponse.getItems();
-                        SearchResult searchResult = searchResults.get(0);
-
-                        if(searchResult != null)
-                            returns.add(searchResult.toPrettyString());
-                    }
+                    List<SearchResult> searchResults = searchListResponse.getItems();
+                    for(SearchResult searchResult : searchResults)
+                        videoIds.add(searchResult.getId().getVideoId());
                 }
+
+                VideoListResponse videoListResponse = mService.videos().list("snippet")
+                        .setId(StringUtil.join(videoIds.subList(0, 10), ","))
+                        .execute();
+
+                List<Video> videos = videoListResponse.getItems();
+                for(Video video : videos)
+                    returns.add(new YoutubeItem(video));
+
                 return returns;
             } catch (UserRecoverableAuthIOException ex) {
-                startActivityForResult(ex.getIntent(), REQUEST_AUTHORIZATION);
+                activity.startActivityForResult(ex.getIntent(), REQUEST_AUTHORIZATION);
                 return null;
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -388,43 +353,43 @@ public class YoutubeActivity extends AppCompatActivity
             }
         }
 
-
         @Override
-        protected void onPreExecute() {
-            mOutputText.setText("");
-            mProgress.show();
-        }
-
-        @Override
-        protected void onPostExecute(List<String> output) {
-            mProgress.hide();
-            if (output == null || output.size() == 0) {
-                mOutputText.setText("No results returned.");
-            } else {
-                output.add(0, "Data retrieved using the YouTube Data API:");
-                mOutputText.setText(TextUtils.join("\n", output));
-            }
+        protected void onPostExecute(List<YoutubeItem> items) {
+            if(onNewItemLoaded != null)
+                onNewItemLoaded.onNewYoutubeItemLoaded(new ArrayList<>(items));
         }
 
         @Override
         protected void onCancelled() {
-            mProgress.hide();
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                     showGooglePlayServicesAvailabilityErrorDialog(
                             ((GooglePlayServicesAvailabilityIOException) mLastError)
                                     .getConnectionStatusCode());
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
-                    startActivityForResult(
+                    activity.startActivityForResult(
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                            YoutubeActivity.REQUEST_AUTHORIZATION);
+                            REQUEST_AUTHORIZATION);
                 } else {
-                    mOutputText.setText("The following error occurred:\n"
-                            + mLastError.getMessage());
+                    throw new IllegalArgumentException(mLastError.getMessage());
                 }
             } else {
-                mOutputText.setText("Request cancelled.");
+                throw new IllegalArgumentException("Request cancelled.");
             }
         }
+    }
+
+    public void loadNextPage() {
+        if(activity != null) {
+
+        }
+    }
+
+    public void setOnNewItemLoaded(OnNewItemLoaded onNewItemLoaded) {
+        this.onNewItemLoaded = onNewItemLoaded;
+    }
+
+    public interface OnNewItemLoaded {
+        void onNewYoutubeItemLoaded(ArrayList<YoutubeItem> newItems);
     }
 }

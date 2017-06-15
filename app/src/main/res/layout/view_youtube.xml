@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/pure_white">
+
+    <TextView
+        android:id="@+id/article_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/article_inside_margin"
+        android:textSize="@dimen/article_classification_text_size"
+        android:gravity="end"/>
+
+    <ImageView
+        android:id="@+id/view_youtube_image"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/article_inside_margin"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/article_title_margin_left">
+
+            <ImageView
+                android:id="@+id/article_logo"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/icon_youtube"/>
+
+            <TextView
+                android:id="@+id/article_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/article_logo"
+                android:layout_marginEnd="8dp"
+                android:textSize="@dimen/article_title_text_size"
+                android:textStyle="bold"
+                android:textColor="@color/youtube"/>
+
+            <TextView
+                android:id="@+id/article_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/article_title" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/article_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/article_content_margin_top"/>
+    </LinearLayout>
+</LinearLayout>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -28,6 +29,7 @@ import kr.ac.korea.snsmoa.twitter.TwitterClient;
 import kr.ac.korea.snsmoa.twitter.TwitterWebView;
 import kr.ac.korea.snsmoa.util.Essentials;
 import kr.ac.korea.snsmoa.youtube.YoutubeActivity;
+import kr.ac.korea.snsmoa.youtube.YoutubeClient;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         FacebookClient.getInstance().setWebView(facebookWebView);
         TwitterClient.getInstance().setWebView(twitterWebView);
+        YoutubeClient.getInstance().initiate(this);
 
         FacebookClient.getInstance().setOnIsNotLogined(new FacebookClient.OnIsNotLogined() {
             @Override
@@ -92,8 +95,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         registerReceiver(new AddCategoryToMenuRecevier(), new IntentFilter(AddCategoryToMenuRecevier.ACTION));
         registerReceiver(new ChangeScreenReceiver(), new IntentFilter(ChangeScreenReceiver.ACTION));
-
-        System.out.println(getApplicationContext().getPackageName());
     }
 
     @Override
@@ -207,5 +208,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public void onReceive(Context context, Intent intent) {
             changeScreen((Screen) intent.getSerializableExtra(INTENT_KEY));
         }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        YoutubeClient.getInstance().onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        YoutubeClient.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
