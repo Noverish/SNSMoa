@@ -185,7 +185,11 @@ public class Essentials {
     }
 
     public static String getMatches(String regex, String input) {
-        Pattern pattern = Pattern.compile(regex);
+        return getMatches(regex, input, 0);
+    }
+
+    public static String getMatches(String regex, String input, int flag) {
+        Pattern pattern = Pattern.compile(regex, flag);
         Matcher matcher = pattern.matcher(input);
 
         if(matcher.find()) {

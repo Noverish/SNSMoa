@@ -46,7 +46,7 @@ public class TwitterHtmlProcessor {
 
             contentEle.select("[aria-hidden=\"true\"]").remove();
 
-            String header = headerEle.html();
+            String header = headerEle.html().replaceAll("<[^>]*>","").replaceAll("\\s+"," ");
             String profileImg = profileEle.attr("src");
             String timeDetail = timeEle.attr("aria-label");
             String timeStr = timeEle.html();
@@ -84,7 +84,7 @@ public class TwitterHtmlProcessor {
                 Element linkTitleEle = linkEle.select("span[class=\"Fe7ul3Lt _2p1VUcTE _2DggF3sL _1HXcreMa\"]").first();
                 Element linkContentEle = linkEle.select("span[class=\"Fe7ul3Lt _2DggF3sL _34Ymm628\"]").first();
 
-                item.setLinkImgUrl(extractImgUrl(linkImgEle));
+                item.setLinkImgUrl(extractImgUrl(linkImgEle, html));
                 item.setLinkTitle(Essentials.unicodeToString(linkTitleEle.html()));
                 item.setLinkContent(Essentials.unicodeToString(linkContentEle.html()));
                 item.setLinkUrl(linkEle.attr("href"));
@@ -124,6 +124,9 @@ public class TwitterHtmlProcessor {
     }
 
     public static String extractImgUrl(Element element, String originHtml) {
+        if(element.outerHtml().contains("https://"))
+            return extractImgUrl(element);
+
         String damaged = Essentials.getMatches("url[(][^)]*[)]", element.outerHtml());
         String key = Essentials.getMatches("\\d+", damaged);
         String extraced = Essentials.getMatches("\"[^\"]*" + key + "[^\"]*\"", originHtml);
@@ -161,6 +164,6 @@ public class TwitterHtmlProcessor {
     }
 
     public static boolean isNotLogined(String html) {
-        return Jsoup.parse(html).select("button[class=\"MmJh82_T _2UWZhODR lSM1Fder _2Rz0TobF _1pzUva68 _1qpWiIkN _3f2NsD-H\"]").size() > 0;
+        return html.contains("\"entities\":{}");
     }
 }

@@ -10,6 +10,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 import kr.ac.korea.snsmoa.util.Essentials;
 
@@ -162,6 +163,21 @@ public class FacebookHtmlProcessor {
     }
 
     private static String extractImageUrl(Elements damagedElement, String originHtml) {
+        System.out.println(damagedElement.outerHtml());
+
+        if(damagedElement.outerHtml().contains("_nc_hash")) {
+            String key = getMatches("_nc_hash\\\\\\\\3d [^\"]*", damagedElement.outerHtml());
+            key = key.substring(13);
+            String damagedUrl = getMatches("https[^\"]*" + key +"[^\"]*",originHtml, Pattern.CASE_INSENSITIVE);
+
+            damagedUrl = damagedUrl.replaceAll("\\\\\\\\3a ", ":");
+            damagedUrl = damagedUrl.replaceAll("\\\\\\\\3d ", "=");
+            damagedUrl = damagedUrl.replaceAll("\\\\\\\\25 ", "%");
+            damagedUrl = damagedUrl.replaceAll("\\\\\\\\26 ", "&");
+
+            return damagedUrl;
+        }
+
         String key = getMatches("oh=[0-9a-z]+",damagedElement.outerHtml());
         if(key.equals(""))
             key = getMatches("[\\d]+_[\\d]+_[\\d]+",damagedElement.outerHtml());
