@@ -109,7 +109,7 @@ public abstract class ArticleView extends LinearLayout {
 
         if(articleItem.getFullCategory() == null || articleItem.getFullCategory().equals("")) {
             category.setText("");
-            new CategorizeAsyncTask(context, content.replaceAll("<[^>]*>", ""), new CategorizeAsyncTask.CategorizeListener() {
+            new CategorizeAsyncTask(context, articleItem.getContentForCategorize(), new CategorizeAsyncTask.CategorizeListener() {
                 @Override
                 public void onCategorized(@Nullable String fullCategory) {
                     if (fullCategory != null) {

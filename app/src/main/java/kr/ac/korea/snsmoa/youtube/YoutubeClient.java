@@ -22,6 +22,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTubeScopes;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
@@ -35,6 +36,7 @@ import org.jsoup.helper.StringUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -49,6 +51,9 @@ import static android.app.Activity.RESULT_OK;
 public class YoutubeClient implements EasyPermissions.PermissionCallbacks {
     private Activity activity;
     private OnNewItemLoaded onNewItemLoaded;
+
+    private List<Subscription> subscriptions;
+    private HashMap<Subscription, String> nextPageTokens = new HashMap<>();
 
 
     GoogleAccountCredential mCredential;
@@ -315,20 +320,29 @@ public class YoutubeClient implements EasyPermissions.PermissionCallbacks {
          */
         private List<YoutubeItem> getDataFromApi() throws IOException {
             try {
-                // Get a list of up to 10 files.
-                List<String> videoIds = new ArrayList<>();
                 List<YoutubeItem> returns = new ArrayList<>();
 
-                SubscriptionListResponse subscriptionListResponse = mService.subscriptions().list("snippet")
-                        .setMine(true)
-                        .setMaxResults(50L)
-                        .execute();
-                List<Subscription> subscriptions = subscriptionListResponse.getItems();
-                for(Subscription subscription : subscriptions) {
-                    SearchListResponse searchListResponse = mService.search().list("snippet")
-                            .setChannelId(subscription.getSnippet().getResourceId().getChannelId())
-                            .setOrder("date")
+                if(subscriptions == null) {
+                    SubscriptionListResponse subscriptionListResponse = mService.subscriptions().list("snippet")
+                            .setMine(true)
+                            .setMaxResults(50L)
                             .execute();
+                    subscriptions = subscriptionListResponse.getItems();
+                }
+
+                List<String> videoIds = new ArrayList<>();
+                for(Subscription subscription : subscriptions) {
+                    YouTube.Search.List list = mService.search().list("snippet")
+                            .setChannelId(subscription.getSnippet().getResourceId().getChannelId())
+                            .setMaxResults(1L)
+                            .setOrder("date");
+
+                    if(nextPageTokens.keySet().contains(subscription))
+                        list.setPageToken(nextPageTokens.get(subscription));
+
+                    SearchListResponse searchListResponse = list.execute();
+
+                    nextPageTokens.put(subscription, searchListResponse.getNextPageToken());
 
                     List<SearchResult> searchResults = searchListResponse.getItems();
                     for(SearchResult searchResult : searchResults)
@@ -336,7 +350,8 @@ public class YoutubeClient implements EasyPermissions.PermissionCallbacks {
                 }
 
                 VideoListResponse videoListResponse = mService.videos().list("snippet")
-                        .setId(StringUtil.join(videoIds.subList(0, 10), ","))
+                        .setId(StringUtil.join(videoIds, ","))
+//                        .setId(StringUtil.join(videoIds.subList(0, 20), ","))
                         .execute();
 
                 List<Video> videos = videoListResponse.getItems();
@@ -381,7 +396,7 @@ public class YoutubeClient implements EasyPermissions.PermissionCallbacks {
 
     public void loadNextPage() {
         if(activity != null) {
-
+            getResultsFromApi();
         }
     }
 

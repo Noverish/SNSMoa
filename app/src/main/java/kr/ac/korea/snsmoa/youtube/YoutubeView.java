@@ -2,6 +2,7 @@ package kr.ac.korea.snsmoa.youtube;
 
 import android.content.Context;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
@@ -14,6 +15,7 @@ import kr.ac.korea.snsmoa.article.ArticleView;
 
 public class YoutubeView extends ArticleView {
     private ImageView imageView;
+    private TextView name;
 
     public YoutubeView(Context context) {
         super(context);
@@ -22,6 +24,7 @@ public class YoutubeView extends ArticleView {
 
     private void init() {
         imageView = (ImageView) findViewById(R.id.view_youtube_image);
+        name = (TextView) findViewById(R.id.article_name);
     }
 
     public void setItem(YoutubeItem item) {
@@ -31,6 +34,7 @@ public class YoutubeView extends ArticleView {
         setTitle(item.getTitle());
         setContent(item.getContent());
         setTime(item.getTimeString());
+        name.setText(item.getName());
     }
 
     @Override

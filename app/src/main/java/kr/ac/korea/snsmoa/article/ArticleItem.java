@@ -29,6 +29,13 @@ public class ArticleItem {
     protected String linkContent;
     protected String linkUrl;
 
+
+    public String getContentForCategorize() {
+        return content.replaceAll("<[^>]*>", "");
+    }
+
+
+
     public void setSnsType(SNSType snsType) {
         this.snsType = snsType;
     }
