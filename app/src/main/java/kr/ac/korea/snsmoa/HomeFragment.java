@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import kr.ac.korea.intelligentgallery.R;
 import kr.ac.korea.snsmoa.facebook.FacebookClient;
+import kr.ac.korea.snsmoa.rss.RSSClient;
 import kr.ac.korea.snsmoa.twitter.TwitterClient;
 import kr.ac.korea.snsmoa.youtube.YoutubeClient;
 
@@ -37,6 +38,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         TwitterClient.getInstance().setOnNewItemLoaded(recyclerView);
         FacebookClient.getInstance().setOnNewItemLoaded(recyclerView);
         YoutubeClient.getInstance().setOnNewItemLoaded(recyclerView);
+        RSSClient.getInstance().setOnNewItemLoaded(recyclerView);
 
         TwitterClient.getInstance().setOnUserLogined(new TwitterClient.OnUserLogined() {
             @Override

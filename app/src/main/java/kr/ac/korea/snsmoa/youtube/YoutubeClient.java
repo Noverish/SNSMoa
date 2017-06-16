@@ -36,6 +36,7 @@ import org.jsoup.helper.StringUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -328,6 +329,7 @@ public class YoutubeClient implements EasyPermissions.PermissionCallbacks {
                             .setMaxResults(50L)
                             .execute();
                     subscriptions = subscriptionListResponse.getItems();
+                    Collections.shuffle(subscriptions);
                 }
 
                 List<String> videoIds = new ArrayList<>();

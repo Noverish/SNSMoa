@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import kr.ac.korea.intelligentgallery.R;
 import kr.ac.korea.snsmoa.facebook.FacebookClient;
 import kr.ac.korea.snsmoa.facebook.FacebookWebView;
+import kr.ac.korea.snsmoa.rss.RSSClient;
 import kr.ac.korea.snsmoa.twitter.TwitterClient;
 import kr.ac.korea.snsmoa.twitter.TwitterWebView;
 import kr.ac.korea.snsmoa.util.Essentials;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FacebookClient.getInstance().setWebView(facebookWebView);
         TwitterClient.getInstance().setWebView(twitterWebView);
         YoutubeClient.getInstance().initiate(this);
+        RSSClient.getInstance().initiate();
 
         FacebookClient.getInstance().setOnIsNotLogined(new FacebookClient.OnIsNotLogined() {
             @Override

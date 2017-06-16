@@ -17,6 +17,9 @@ import kr.ac.korea.snsmoa.asynctask.CategorizeAsyncTask;
 import kr.ac.korea.snsmoa.facebook.FacebookArticleItem;
 import kr.ac.korea.snsmoa.facebook.FacebookArticleView;
 import kr.ac.korea.snsmoa.facebook.FacebookClient;
+import kr.ac.korea.snsmoa.rss.RSSClient;
+import kr.ac.korea.snsmoa.rss.RSSItem;
+import kr.ac.korea.snsmoa.rss.RSSView;
 import kr.ac.korea.snsmoa.twitter.TwitterArticleItem;
 import kr.ac.korea.snsmoa.twitter.TwitterArticleView;
 import kr.ac.korea.snsmoa.twitter.TwitterClient;
@@ -30,11 +33,15 @@ import kr.ac.korea.snsmoa.youtube.YoutubeView;
  * Created by Noverish on 2017-03-22.
  */
 
-public class CustomRecyclerView extends RecyclerView implements FacebookClient.OnNewItemLoaded, TwitterClient.OnNewItemLoaded, YoutubeClient.OnNewItemLoaded {
+public class CustomRecyclerView extends RecyclerView implements
+        FacebookClient.OnNewItemLoaded,
+        TwitterClient.OnNewItemLoaded,
+        YoutubeClient.OnNewItemLoaded,
+        RSSClient.OnNewItemLoaded {
     private ArrayList<ArticleItem> allItems = new ArrayList<>();
     private ArrayList<ArticleItem> items = new ArrayList<>();
     private LinearLayoutManager layoutManager;
-    private int numOfLoaded = 3;
+    private int numOfLoaded = 4;
     private String category = "ALL";
 
     public CustomRecyclerView(Context context) {
@@ -58,6 +65,7 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
         static final int FACEBOOK = 0;
         static final int TWITTER = 1;
         static final int YOUTUBE = 2;
+        static final int RSS = 3;
 
         @Override
         public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -68,6 +76,8 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
                     return new CustomViewHolder(new TwitterArticleView(getContext()));
                 case YOUTUBE:
                     return new CustomViewHolder(new YoutubeView(getContext()));
+                case RSS:
+                    return new CustomViewHolder(new RSSView(getContext()));
                 default:
                     return null;
             }
@@ -84,6 +94,8 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
                 ((TwitterArticleView) view).setItem((TwitterArticleItem) item);
             } else if(view instanceof YoutubeView && item instanceof YoutubeItem) {
                 ((YoutubeView) view).setItem((YoutubeItem) item);
+            } else if(view instanceof RSSView && item instanceof RSSItem) {
+                ((RSSView) view).setItem((RSSItem) item);
             }
 
             view.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -104,6 +116,8 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
                 return TWITTER;
             if(item instanceof YoutubeItem)
                 return YOUTUBE;
+            if(item instanceof RSSItem)
+                return RSS;
             return -1;
         }
     }
@@ -119,13 +133,14 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
 
-            if(dy > 0 && numOfLoaded >= 3) {
+            if(dy > 0 && numOfLoaded >= 4) {
                 if (items.size() - layoutManager.findFirstCompletelyVisibleItemPosition() < 5) {
                     numOfLoaded = 0;
 
                     FacebookClient.getInstance().loadNextPage();
                     TwitterClient.getInstance().loadNextPage();
                     YoutubeClient.getInstance().loadNextPage();
+                    RSSClient.getInstance().loadNextPage();
                 }
             }
         }
@@ -150,6 +165,14 @@ public class CustomRecyclerView extends RecyclerView implements FacebookClient.O
     @Override
     public void onNewYoutubeItemLoaded(ArrayList<YoutubeItem> newItems) {
         Log.i("<youtube article>","new youtube article is " + newItems.size());
+
+        addItems(newItems);
+        numOfLoaded++;
+    }
+
+    @Override
+    public void onNewRSSItemLoaded(ArrayList<RSSItem> newItems) {
+        Log.i("<rss article>","new rss article is " + newItems.size());
 
         addItems(newItems);
         numOfLoaded++;
