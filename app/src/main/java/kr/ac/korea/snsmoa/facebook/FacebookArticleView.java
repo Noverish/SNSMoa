@@ -12,7 +12,7 @@ import kr.ac.korea.snsmoa.article.ArticleView;
 /**
  * Created by Noverish on 2016-07-17.
  */
-public class FacebookArticleView extends ArticleView implements View.OnClickListener{
+public class FacebookArticleView extends ArticleView {
     private Context context;
     private FacebookArticleItem item;
 
@@ -103,6 +103,8 @@ public class FacebookArticleView extends ArticleView implements View.OnClickList
 
     @Override
     public void onClick(View view) {
+        super.onClick(view);
+
 //        OnPageFinishedListener listener = new OnPageFinishedListener() {
 //            @Override
 //            public void onPageFinished(HtmlParseWebView webView, String url) {

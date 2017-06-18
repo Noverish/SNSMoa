@@ -83,16 +83,23 @@ public class FacebookHtmlProcessor {
                 item.setLocation(Essentials.unicodeToString(timeLocationPart.get(1).outerHtml().replaceAll("<[^>]*>","")));
             }
 
-            Element content = article.select("div[class=\"_5rgt _5nk5 _5msi\"]").select("span").first();
-            if(content != null) {
-                if (content.select("[class=\"text_exposed_show\"]") != null) {
-                    content.select("[class=\"text_exposed_show\"]").remove();
-                }
-                item.setContent(Essentials.unicodeToString(content.outerHtml().replaceAll("<[^>]*>", "").trim()));
+            try {
+                Element contentLayout = article.select("div[class=\"_5rgt _5nk5 _5msi\"]").first();
+                Element content = contentLayout.select("span").first();
+                Element link = contentLayout.select("a[class=\"_5msj\"]").first();
 
-                Elements articleUrlEle = content.select("a[class=\"_5msj\"]");
-                item.setArticleUrl("https://m.facebook.com" + articleUrlEle.attr("href"));
-            } else {
+                try {
+                    content.select("[class=\"text_exposed_show\"]").remove();
+                } catch (Exception ignored) {
+
+                }
+
+                item.setContent(Essentials.unicodeToString(content.outerHtml().replaceAll("<[^>]*>", "").trim()));
+                item.setArticleUrl("https://m.facebook.com" + link.attr("href"));
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+
                 item.setContent("");
                 item.setArticleUrl("");
             }

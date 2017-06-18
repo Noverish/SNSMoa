@@ -11,7 +11,7 @@ import kr.ac.korea.snsmoa.article.ArticleView;
 /**
  * Created by Noverish on 2016-05-30.
  */
-public class TwitterArticleView extends ArticleView implements View.OnClickListener{
+public class TwitterArticleView extends ArticleView {
     private TwitterArticleItem item;
 
     private TextView screenName;
@@ -123,6 +123,7 @@ public class TwitterArticleView extends ArticleView implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+        super.onClick(view);
 //        OnPageFinishedListener listener = new OnPageFinishedListener() {
 //            @Override
 //            public void onPageFinished(HtmlParseWebView webView, String url) {

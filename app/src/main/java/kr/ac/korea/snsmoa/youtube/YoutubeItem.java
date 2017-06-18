@@ -14,6 +14,7 @@ public class YoutubeItem extends ArticleItem {
 
     public YoutubeItem(Video video) {
         super();
+        this.articleUrl = "https://www.youtube.com/watch?v=" + video.getId();
         this.imgUrl = video.getSnippet().getThumbnails().getHigh().getUrl();
         this.title = video.getSnippet().getTitle();
         this.content = video.getSnippet().getDescription();

@@ -6,7 +6,6 @@ import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 
 import kr.ac.korea.intelligentgallery.R;
 import kr.ac.korea.snsmoa.asynctask.CategorizeAsyncTask;
+import kr.ac.korea.snsmoa.util.Essentials;
 import kr.ac.korea.snsmoa.webview.VideoWebView;
 import kr.ac.korea.snsmoa.webview.WebViewActivity;
 
@@ -26,7 +26,7 @@ import kr.ac.korea.snsmoa.webview.WebViewActivity;
  * Created by Noverish on 2017-01-12.
  */
 
-public abstract class ArticleView extends LinearLayout {
+public abstract class ArticleView extends LinearLayout implements View.OnClickListener {
     protected ArticleItem articleItem;
     protected Context context;
 
@@ -69,6 +69,8 @@ public abstract class ArticleView extends LinearLayout {
         linkContent = (TextView) findViewById(R.id.article_link_content);
 
         mediaLayout = (LinearLayout) findViewById(R.id.article_media_layout);
+
+        setOnClickListener(this);
     }
 
     protected void setCategory(String category) {
@@ -99,9 +101,9 @@ public abstract class ArticleView extends LinearLayout {
     }
 
     protected void setContent(String content) {
-        this.content.setClickable(true);
-        this.content.setMovementMethod(LinkMovementMethod.getInstance());
-
+//        this.content.setClickable(true);
+//        this.content.setMovementMethod(LinkMovementMethod.getInstance());
+//
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             this.content.setText(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
         else
@@ -175,5 +177,15 @@ public abstract class ArticleView extends LinearLayout {
 
         this.profileImg.setOnClickListener(listener);
         this.title.setOnClickListener(listener);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(articleItem == null)
+            return;
+
+        if(articleItem.getArticleUrl() != null && !articleItem.getArticleUrl().equals("")) {
+            Essentials.openExternalLink(context, articleItem.getArticleUrl());
+        }
     }
 }
